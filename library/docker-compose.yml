@@ -2,10 +2,24 @@ version: '3.1'
 
 services:
 
+  backend:
+    build: . # Path for the dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    restart: on-failure
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
   db:
     image: postgres
     ports:
       - "5432:5432"
-    restart: always
+    restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: changemeinprod!
+      POSTGRES_PASSWORD: password
