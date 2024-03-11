@@ -24,7 +24,7 @@ BEGIN
     -- Replace the id here with the first user id you want to have ownership of the orders.
     userId1 := 1;
     -- Replace the id here with the second user id you want to have ownership of the orders.
-    userId2 := 3;
+    userId2 := 2;
 
 DELETE FROM book_order_quantities;
 DELETE FROM book_orders;
