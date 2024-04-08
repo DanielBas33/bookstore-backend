@@ -12,6 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for Spring Security settings.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -22,8 +25,15 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if configuration encounters an error
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
