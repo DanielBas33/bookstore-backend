@@ -1,10 +1,13 @@
 package com.pruebas.library.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,5 +24,11 @@ public class Author {
     private String name;
 
     private Integer age;
+
+    @OneToMany(
+            mappedBy = "author"
+    )
+    @JsonManagedReference
+    private List<Book> books;
 
 }
