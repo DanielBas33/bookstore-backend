@@ -21,7 +21,6 @@ public final class TestDataUtil {
 
     public static AuthorDto createTestAuthorDtoA() {
         return AuthorDto.builder()
-                .id(1L)
                 .name("Abigail Rose")
                 .age(80)
                 .build();

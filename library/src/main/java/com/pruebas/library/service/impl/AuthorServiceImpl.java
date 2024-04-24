@@ -81,7 +81,6 @@ public class AuthorServiceImpl implements AuthorService {
      */
     @Override
     public Author partialUpdate(Long id, Author author) {
-        //author.setId(id);
 
         return authorRepository.findById(id)
                 .map(existingAuthor -> {

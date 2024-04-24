@@ -4,10 +4,14 @@ import com.pruebas.library.dto.AuthorDto;
 import com.pruebas.library.model.Author;
 import com.pruebas.library.mappers.Mapper;
 import com.pruebas.library.service.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +44,7 @@ public class AuthorController {
      * @return ResponseEntity containing the created AuthorDto and HttpStatus.CREATED.
      */
     @PostMapping
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> createAuthor(@Valid @RequestBody AuthorDto authorDto) {
         Author author = authorMapper.mapFrom(authorDto);
         Author savedAuthor = authorService.save(author);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthor), HttpStatus.CREATED);
@@ -75,10 +79,10 @@ public class AuthorController {
     /**
      * Updates an existing author with the specified ID in the database.
      *
-     * @param id         The ID of the author to update.
-     * @param authorDto  The DTO containing updated author details.
+     * @param id        The ID of the author to update.
+     * @param authorDto The DTO containing updated author details.
      * @return ResponseEntity containing the updated AuthorDto and HttpStatus.OK if successful,
-     *         or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
+     * or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
      */
     @PutMapping(path = "/{id}")
     public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
@@ -86,8 +90,8 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        authorDto.setId(id);
         Author author = authorMapper.mapFrom(authorDto);
+        author.setId(id);
         Author savedAuthor = authorService.save(author);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthor), HttpStatus.OK);
     }
@@ -95,10 +99,10 @@ public class AuthorController {
     /**
      * Partially updates an existing author with the specified ID in the database.
      *
-     * @param id         The ID of the author to update.
-     * @param authorDto  The DTO containing the partial author details to update.
+     * @param id        The ID of the author to update.
+     * @param authorDto The DTO containing the partial author details to update.
      * @return ResponseEntity containing the updated AuthorDto and HttpStatus.OK if successful,
-     *         or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
+     * or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
      */
     @PatchMapping(path = "/{id}")
     public ResponseEntity<AuthorDto> partialUpdate(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
@@ -116,12 +120,27 @@ public class AuthorController {
      *
      * @param id The ID of the author to delete.
      * @return ResponseEntity with HttpStatus.NO_CONTENT upon successful deletion,
-     *         or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
+     * or HttpStatus.NOT_FOUND if the author with the specified ID does not exist.
      */
     @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteAuthor(@PathVariable("id") Long id) {
         authorService.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e)
+    {
+        var errors = new HashMap<String, String>();
+        e.getBindingResult().getAllErrors()
+                .forEach(error -> {
+                    var fieldName = ((FieldError) error).getField();
+                    var errorMessage = error.getDefaultMessage();
+                    errors.put(fieldName, errorMessage);
+                });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+
 
 }

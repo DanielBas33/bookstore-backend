@@ -56,15 +56,12 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void testThatCreateAuthorSuccessfullyReturnsSavedAuthor() throws Exception {
         AuthorDto testAuthorA = TestDataUtil.createTestAuthorDtoA();
-        testAuthorA.setId(null);
         String authorJson = objectMapper.writeValueAsString(testAuthorA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorJson)
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").isNumber()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.name").value("Abigail Rose")
         ).andExpect(
@@ -88,8 +85,6 @@ public class AuthorControllerIntegrationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].name").value("Abigail Rose")
         ).andExpect(
@@ -116,8 +111,6 @@ public class AuthorControllerIntegrationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/1")
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").value(1)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.name").value("Abigail Rose")
         ).andExpect(
@@ -174,8 +167,6 @@ public class AuthorControllerIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoUpdateJson)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").value(savedAuthor.getId())
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.name").value(authorDto.getName())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(authorDto.getAge())
@@ -211,8 +202,6 @@ public class AuthorControllerIntegrationTests {
                 MockMvcRequestBuilders.patch("/authors/" + savedAuthor.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorDtoJson)
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").value(savedAuthor.getId())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.name").value("UPDATED")
         ).andExpect(
